@@ -711,7 +711,9 @@ namespace LinearRegressionConstructor.viewmodels
             };
 
             List<Factor> tempFuncMax = _x;
+
             List<List<double>> funcResult = new List<List<double>>();
+
             List<string> funcResultName = new List<string>();
 
             corCoeff = Correlation.Pearson(x[index].Observations, y.Observations);

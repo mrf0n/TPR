@@ -53,7 +53,7 @@ namespace LinearRegressionConstructor.views {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/LinearRegressionConstructor;V1.0.0.0;component/views/mainview.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/LinearRegressionConstructor;component/views/mainview.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\..\views\MainView.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

@@ -61,7 +61,7 @@ namespace LinearRegressionConstructor.views {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/LinearRegressionConstructor;V1.0.0.0;component/views/choseemanagedparam.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/LinearRegressionConstructor;component/views/choseemanagedparam.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\..\views\ChoseeManagedParam.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

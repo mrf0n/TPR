@@ -337,14 +337,12 @@ namespace LinearRegressionConstructor.viewmodels
             #region Stage 0
             if (CalculationConfig.IsSignCheckedBlock1)
                 {
-                    int test = 0;
-                    List<Factor> tempo = new List<Factor>(X.Count);
                     for (int i = 0; i < X.Count; i++)
                     {
-                        FuncPreprocessingOfStatData(i, X, Y, ref tempo);
-                        X[i] = tempo[i];
+                        Factor temp = FuncPreprocessingOfStatData(X[i], Y);
+                        X[i] = temp;
                     }
-                    var t = 0;
+
                 }
             #endregion
 
@@ -651,23 +649,19 @@ namespace LinearRegressionConstructor.viewmodels
         /// <param name="linearPearson"></param>
         /// <param name="threshold"></param>
 
-        List<Factor> SegmentTransform(List<Factor> x)
+        Factor SegmentTransform(Factor x)
         {
-            var k = 0.0;
-            for(int i=0; i < x.Count; i++)
+            var k = 100.0 / (x.Observations.Max() - x.Observations.Min());
+            for(int j = 0; j < x.Observations.Count;j++)
             {
-                k = 100.0 / (x[i].Observations.Max() - x[i].Observations.Min());
-                for(int j = 0; j < x[i].Observations.Count;j++)
-                {
-                    x[i].Observations[j] = k * (x[i].Observations[j] - x[i].Observations.Min()) + 2;
-                }
+                x.Observations[j] = k * (x.Observations[j] - x.Observations.Min()) + 2;
             }
             return x;
         }
 
-        void FuncPreprocessingOfStatData(int index, List<Factor> _x, Factor y, ref List<Factor> tempo)
+        Factor FuncPreprocessingOfStatData(Factor _x, Factor y)
         {
-            var x = SegmentTransform(_x);
+            Factor x = SegmentTransform(_x);
             var corCoeff = 0.0;
             int funcCount = 16;
             
@@ -711,46 +705,46 @@ namespace LinearRegressionConstructor.viewmodels
                 -10.0
             };
 
-            List<Factor> tempFuncMax = _x;
+            Factor tempFuncMax = _x;
 
             List<List<double>> funcResult = new List<List<double>>();
 
             List<string> funcResultName = new List<string>();
 
-            corCoeff = Correlation.Pearson(x[index].Observations, y.Observations);
+            corCoeff = Correlation.Pearson(x.Observations, y.Observations);
 
             for (int funcIndex = 1; funcIndex <= funcCount; funcIndex++)
             {
                 if (funcIndex < 9)
                 {
                     List<double> func = new List<double>();
-                    for (int j = 0; j < x[index].Observations.Count; j++)
+                    for (int j = 0; j < x.Observations.Count; j++)
                     {
                         switch (funcIndex)
                         {
                             case 1:
-                                func.Add(Math.Pow(x[index].Observations[j], 2));
+                                func.Add(Math.Pow(x.Observations[j], 2));
                                 break;
                             case 2:
-                                func.Add(Math.Pow(x[index].Observations[j], 3));
+                                func.Add(Math.Pow(x.Observations[j], 3));
                                 break;
                             case 3:
-                                func.Add(Math.Pow(x[index].Observations[j], -1));
+                                func.Add(Math.Pow(x.Observations[j], -1));
                                 break;
                             case 4:
-                                func.Add(Math.Pow(x[index].Observations[j], -2));
+                                func.Add(Math.Pow(x.Observations[j], -2));
                                 break;
                             case 5:
-                                func.Add(Math.Pow(x[index].Observations[j], -3));
+                                func.Add(Math.Pow(x.Observations[j], -3));
                                 break;
                             case 6:
-                                func.Add(Math.Pow(x[index].Observations[j], 1 / 3));
+                                func.Add(Math.Pow(x.Observations[j], 1 / 3));
                                 break;
                             case 7:
-                                func.Add(Math.Log(x[index].Observations[j]));
+                                func.Add(Math.Log(x.Observations[j]));
                                 break;
                             case 8:
-                                func.Add(Math.Pow(x[index].Observations[j], 1 / 2));
+                                func.Add(Math.Pow(x.Observations[j], 1 / 2));
                                 break;
                         }
                     }
@@ -782,45 +776,39 @@ namespace LinearRegressionConstructor.viewmodels
                             funcResultName.Add("x^1/2");
                             break;
                     }
-                    //corCoeffFunc = Correlation.Pearson(func, y.Observations);
-                    //if (Math.Abs(corCoeffFunc) > Math.Abs(maxCorCoeffFunc))
-                    //{
-                    //    maxCorCoeffFunc = Math.Abs(corCoeffFunc);
-                    //    tempFuncMax[index].Observations = func;
-                    //}
                 }
                 else
                 {
                     for (int alfaIndex = 0; alfaIndex < TableAlfa.Count; alfaIndex++)
                     {
                         List<double> func = new List<double>();
-                        for (int j = 0; j < x[index].Observations.Count; j++)
+                        for (int j = 0; j < x.Observations.Count; j++)
                         {
                             switch (funcIndex)
                             {
                                 case 9:
-                                    func.Add(Math.Sin(x[index].Observations[j] * TableAlfa[alfaIndex]));
+                                    func.Add(Math.Sin(x.Observations[j] * TableAlfa[alfaIndex]));
                                     break;
                                 case 10:
-                                    func.Add(Math.Tan(x[index].Observations[j] * TableAlfa[alfaIndex]));
+                                    func.Add(Math.Tan(x.Observations[j] * TableAlfa[alfaIndex]));
                                     break;
                                 case 11:
-                                    func.Add(Math.Atan(x[index].Observations[j] * TableAlfa[alfaIndex]));
+                                    func.Add(Math.Atan(x.Observations[j] * TableAlfa[alfaIndex]));
                                     break;
                                 case 12:
-                                    func.Add(Math.Exp(x[index].Observations[j] * TableAlfa[alfaIndex]));
+                                    func.Add(Math.Exp(x.Observations[j] * TableAlfa[alfaIndex]));
                                     break;
                                 case 13:
-                                    func.Add(Math.Exp(x[index].Observations[j] * Math.Pow(TableAlfa[alfaIndex], 2)));
+                                    func.Add(Math.Exp(x.Observations[j] * Math.Pow(TableAlfa[alfaIndex], 2)));
                                     break;
                                 case 14:
-                                    func.Add(1.0 / (1 - (Math.Exp(x[index].Observations[j] * Math.Pow(TableAlfa[alfaIndex], 1)))));
+                                    func.Add(1.0 / (1 - (Math.Exp(x.Observations[j] * Math.Pow(TableAlfa[alfaIndex], 1)))));
                                     break;
                                 case 15:
-                                    func.Add((Math.Exp(x[index].Observations[j] * TableAlfa[alfaIndex]) - 1) / (Math.Exp(x[index].Observations[j] * TableAlfa[alfaIndex]) + 1));
+                                    func.Add((Math.Exp(x.Observations[j] * TableAlfa[alfaIndex]) - 1) / (Math.Exp(x.Observations[j] * TableAlfa[alfaIndex]) + 1));
                                     break;
                                 case 16:
-                                    func.Add((Math.Exp(x[index].Observations[j] * TableAlfa[alfaIndex]) - Math.Exp(x[index].Observations[j] * (-TableAlfa[alfaIndex]))) / 2.0);
+                                    func.Add((Math.Exp(x.Observations[j] * TableAlfa[alfaIndex]) - Math.Exp(x.Observations[j] * (-TableAlfa[alfaIndex]))) / 2.0);
                                     break;
                             }
                         }
@@ -864,16 +852,16 @@ namespace LinearRegressionConstructor.viewmodels
             var max = pearsonLst.Max();
             var maxName = funcResultName[pearsonLst.LastIndexOf(max)];
 
-            List<Factor> temp = _x;
-            temp[index].Name += " " + maxName;
-            temp[index].Observations = funcResult[pearsonLst.LastIndexOf(max)];
+            Factor temp = _x;
+            //temp.Name = maxName;
+            temp.Observations = funcResult[pearsonLst.LastIndexOf(max)];
             if (Math.Abs(max) > (Math.Abs(corCoeff) + 0.01))
             {
-                FuncPreprocessingOfStatData(index, temp, y, ref tempo);
+                return FuncPreprocessingOfStatData(temp, y);
             }
             else
             {
-                tempo.Add(temp[index]);
+                return temp;
             }
         }
 

@@ -337,6 +337,7 @@ namespace LinearRegressionConstructor.viewmodels
             #region Stage 0
             if (CalculationConfig.IsSignCheckedBlock1)
                 {
+                    int test = 0;
                     List<Factor> tempo = new List<Factor>(X.Count);
                     for (int i = 0; i < X.Count; i++)
                     {

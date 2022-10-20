@@ -425,6 +425,9 @@ namespace LinearRegressionConstructor.viewmodels
                 Model.Add(item);
 
             UpdateControls();
+
+            //здесь должен быть блок 2
+
         }
         private void ClearColors()
         {

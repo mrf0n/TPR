@@ -97,6 +97,15 @@ namespace LinearRegressionConstructor.viewmodels
                 return MainVM.Y.Name.Substring(0, Math.Min(30, MainVM.Y.Name.Count()));
             }
         }
+        public string CurrentParamb
+        {
+            get
+            {
+                if (MainVM.Bl2 == null)
+                    return "Empty";
+                return MainVM.Bl2.Name.Substring(0, Math.Min(30, MainVM.Bl2.Name.Count()));
+            }
+        }
         private RelayCommand chooseParam;
         public RelayCommand ChooseParam => chooseParam ??= new(obj =>
         {
@@ -105,5 +114,14 @@ namespace LinearRegressionConstructor.viewmodels
             wnd.ShowDialog();
             OnPropertyChanged(nameof(CurrentParam));
         });
+
+        //private RelayCommand chooseParambl2;
+        //public RelayCommand ChooseParamBlock2 => chooseParambl2 ??= new(obj =>
+        //{
+        //    ChooseBlock2Parame wnd2 = new();
+        //    ((ChooseBlock2ParameVM)wnd2.DataContext).FactorsCollection = MainVM.listafterbl2;
+        //    wnd2.ShowDialog();
+        //    OnPropertyChanged(nameof(CurrentParamb));
+        //});
     }
 }

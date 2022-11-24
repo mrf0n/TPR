@@ -12,6 +12,7 @@ using System.Windows;
 using System.Windows.Media;
 using MathNet.Numerics.Statistics;
 using System.Threading.Tasks;
+using System.Net;
 
 namespace LinearRegressionConstructor.viewmodels
 {
@@ -36,7 +37,7 @@ namespace LinearRegressionConstructor.viewmodels
         private static Thread Compute;
         public MainVM()
         {
-            CalculationConfig = new(null, 0.5, 0.05, false, false, false);
+            CalculationConfig = new(null,null, 0.5, 0.05, false, false, false);
             X = new();
             ModelB = new();
             Model = new();
@@ -143,8 +144,11 @@ namespace LinearRegressionConstructor.viewmodels
         #region Data
         public Config CalculationConfig { get; set; }
         public static List<Factor> Diseases { get; set; }
+
+        public static List<Factor> listafterbl2;
         public static List<Factor>? X { get; set; }
         public static Factor? Y { get; set; }
+        public static Factor? Bl2 { get; set; }
         public static List<double> ModelB { get; set; }
         public static List<Factor> Model { get; set; }
         private static List<List<Factor>> Models;
@@ -259,6 +263,7 @@ namespace LinearRegressionConstructor.viewmodels
             ClearColors();
             Compute = new Thread(Execute);
             Compute.IsBackground = true;
+            Compute.SetApartmentState(ApartmentState.STA);
             Compute.Start();
         });
 
@@ -342,8 +347,8 @@ namespace LinearRegressionConstructor.viewmodels
                         Factor temp = FuncPreprocessingOfStatData(X[i], Y);
                         X[i] = temp;
                     }
-
-                }
+                listafterbl2 = X;
+            }
             #endregion
 
             #region Stage 1
@@ -426,8 +431,14 @@ namespace LinearRegressionConstructor.viewmodels
 
             UpdateControls();
 
+            listafterbl2 = Model;
+
             //здесь должен быть блок 2
-            Model = Block2(Model, ModelB, 0);
+
+            if (CalculationConfig.IsSignCheckedBlock2)
+            {
+                Model = Block2(Model, ModelB);
+            }
 
             UpdateControls();
         }
@@ -1223,8 +1234,20 @@ namespace LinearRegressionConstructor.viewmodels
             return r;
         }
 
-        List<Factor> Block2(List<Factor> Model, List<double> ModelB, int index)
+        List<Factor> Block2(List<Factor> Model, List<double> ModelB)
         {
+
+            ChooseBlock2Parame wnd2 = new();
+            ((ChooseBlock2ParameVM)wnd2.DataContext).FactorsCollection = listafterbl2;
+            wnd2.ShowDialog();
+            //Выбор управляемого фактора
+            if (CalculationConfig.Block2Factor == null)
+            {
+                CalculationConfig.Block2Factor = Model.First();
+            }
+            Bl2 = CalculationConfig.Block2Factor;
+
+            //Y.Num = 0;
             List<double> temp = new List<double>();
             List<double> b = new List<double>();
             List<double> a = new List<double>();
@@ -1243,14 +1266,14 @@ namespace LinearRegressionConstructor.viewmodels
 
             for (int i = 0; i < Model.Count(); i++)
             {
-                if (index != i)
+                if (Bl2 != Model[i])
                 {
-                    if (Math.Abs(Correlation.Pearson(Model[index].Observations, Model[i].Observations)) > 0.7)
+                    if (Math.Abs(Correlation.Pearson(Bl2.Observations, Model[i].Observations)) > 0.7)
                     {
                         strong.Add(Model[i]);
                         strongIndex.Add(i);
                     }
-                    else if (Math.Abs(Correlation.Pearson(Model[index].Observations, Model[i].Observations)) <= 0.7 && Math.Abs(Correlation.Pearson(Model[index].Observations, Model[i].Observations)) > 0.3)
+                    else if (Math.Abs(Correlation.Pearson(Bl2.Observations, Model[i].Observations)) <= 0.7 && Math.Abs(Correlation.Pearson(Bl2.Observations, Model[i].Observations)) > 0.3)
                     {
                         mid.Add(Model[i]);
                         midIndex.Add(i);
@@ -1302,7 +1325,7 @@ namespace LinearRegressionConstructor.viewmodels
             //
             for(int i = 0; i < strong.Count(); i++)
             {
-                temp[strongIndex[i]] = Math.Abs(Correlation.Pearson(Model[index].Observations, strong[i].Observations));
+                temp[strongIndex[i]] = Math.Abs(Correlation.Pearson(Bl2.Observations, strong[i].Observations));
             }
             if (mid.Count() > 0)
             {
@@ -1311,7 +1334,7 @@ namespace LinearRegressionConstructor.viewmodels
                     double sum = 0;
                     for (int j = 0; j < strong.Count(); j++)
                     {
-                        sum += Math.Abs(Correlation.Pearson(Model[index].Observations, strong[j].Observations)) *
+                        sum += Math.Abs(Correlation.Pearson(Bl2.Observations, strong[j].Observations)) *
                             Math.Abs(Correlation.Pearson(mid[i].Observations, strong[j].Observations));
                     }
                     temp[midIndex[i]] = sum;
@@ -1326,7 +1349,7 @@ namespace LinearRegressionConstructor.viewmodels
                     {
                         for (int k = 0; k < mid.Count(); k++)
                         {
-                            sum += Math.Abs(Correlation.Pearson(Model[index].Observations, strong[j].Observations)) *
+                            sum += Math.Abs(Correlation.Pearson(Bl2.Observations, strong[j].Observations)) *
                                 Math.Abs(Correlation.Pearson(strong[j].Observations, mid[k].Observations)) *
                                 Math.Abs(Correlation.Pearson(mid[k].Observations, easy[i].Observations));
                         }
@@ -1340,13 +1363,12 @@ namespace LinearRegressionConstructor.viewmodels
 
                 b.Add(temp[i] * (Y.Observations.StandardDeviation()) / Model[i].Observations.StandardDeviation());
                 a.Add(Y.Observations.Average() - b[i-1] * Model[i].Observations.Average());
-                for (int j = 0; j < Model[index].Observations.Count(); j++)
+                for (int j = 0; j < Bl2.Observations.Count(); j++)
                 {
-                    Model[i].Observations[j] = b[i - 1] * Model[index].Observations[j];
+                    Model[i].Observations[j] = b[i - 1] * Bl2.Observations[j];
                     Model[i].Observations[j] += a[i - 1]; 
                 }
             }
-
             return Model;
         }
         #endregion

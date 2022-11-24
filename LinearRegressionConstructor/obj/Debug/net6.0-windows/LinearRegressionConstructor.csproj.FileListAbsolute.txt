@@ -141,3 +141,7 @@ C:\Users\Admin\Desktop\TPR\LinearRegressionConstructor\obj\Debug\net6.0-windows\
 C:\Users\Admin\Desktop\TPR\LinearRegressionConstructor\obj\Debug\net6.0-windows\LinearRegressionConstructor.pdb
 C:\Users\Admin\Desktop\TPR\LinearRegressionConstructor\obj\Debug\net6.0-windows\LinearRegressionConstructor.genruntimeconfig.cache
 C:\Users\Admin\Desktop\TPR\LinearRegressionConstructor\obj\Debug\net6.0-windows\ref\LinearRegressionConstructor.dll
+C:\Users\Admin\Desktop\TPR\LinearRegressionConstructor\obj\Debug\net6.0-windows\views\ChooseBlock2Param.g.cs
+C:\Users\Admin\Desktop\TPR\LinearRegressionConstructor\obj\Debug\net6.0-windows\views\ChooseBlock2Param.baml
+C:\Users\Admin\Desktop\TPR\LinearRegressionConstructor\obj\Debug\net6.0-windows\views\ChooseBlock2Parame.g.cs
+C:\Users\Admin\Desktop\TPR\LinearRegressionConstructor\obj\Debug\net6.0-windows\views\ChooseBlock2Parame.baml

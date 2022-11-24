@@ -3,6 +3,7 @@
     internal class Config
     {
         private Factor managedF;
+        private Factor block2F;
         private double thresholdC;
         private double thresholdL;
         private bool isSignC;
@@ -13,6 +14,11 @@
         {
             get => managedF;
             set => managedF = value;
+        }
+        public Factor Block2Factor
+        {
+            get => block2F;
+            set => block2F = value;
         }
         public double ThresholdForCouples
         {
@@ -51,8 +57,9 @@
             get => isSignCheckedBl2;
             set => isSignCheckedBl2 = value;
         }
-        public Config(Factor manFactor, double tfc, double tfm, bool isSignCh, bool isSignCheckedBl1, bool isSignCheckedBl2)
+        public Config(Factor manFactor, Factor block2Factor,  double tfc, double tfm, bool isSignCh, bool isSignCheckedBl1, bool isSignCheckedBl2)
         {
+            Block2Factor = block2Factor;
             ManagedFactor = manFactor;
             ThresholdForCouples = tfc;
             ThresholdForManaged = tfm;

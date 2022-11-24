@@ -71,6 +71,12 @@
                 <CheckBox VerticalAlignment="Center"
                           IsChecked="{Binding IsSignCheckedBlock1}"/>
             </StackPanel>
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center">
+                <Label Content="Блок 2"/>
+                <CheckBox VerticalAlignment="Center"
+                          IsChecked="{Binding IsSignCheckedBlock2}"/>
+            </StackPanel>
         </StackPanel>
     </DockPanel>
 </Window>

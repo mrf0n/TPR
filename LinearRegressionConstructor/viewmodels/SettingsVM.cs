@@ -76,6 +76,18 @@ namespace LinearRegressionConstructor.viewmodels
                 OnPropertyChanged(nameof(IsSignCheckedBlock1));
             }
         }
+        public bool IsSignCheckedBlock2
+        {
+            get
+            {
+                return MainVM.Instance.CalculationConfig.IsSignCheckedBlock2;
+            }
+            set
+            {
+                MainVM.Instance.CalculationConfig.IsSignCheckedBlock2 = value;
+                OnPropertyChanged(nameof(IsSignCheckedBlock2));
+            }
+        }
         public string CurrentParam
         {
             get

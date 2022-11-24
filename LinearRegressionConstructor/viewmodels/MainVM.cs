@@ -36,7 +36,7 @@ namespace LinearRegressionConstructor.viewmodels
         private static Thread Compute;
         public MainVM()
         {
-            CalculationConfig = new(null, 0.5, 0.05, false, false);
+            CalculationConfig = new(null, 0.5, 0.05, false, false, false);
             X = new();
             ModelB = new();
             Model = new();
@@ -427,7 +427,9 @@ namespace LinearRegressionConstructor.viewmodels
             UpdateControls();
 
             //здесь должен быть блок 2
+            Model = Block2(Model, ModelB, 0);
 
+            UpdateControls();
         }
         private void ClearColors()
         {
@@ -1219,6 +1221,133 @@ namespace LinearRegressionConstructor.viewmodels
                 bE.Item2.Add(eOne);
             }
             return r;
+        }
+
+        List<Factor> Block2(List<Factor> Model, List<double> ModelB, int index)
+        {
+            List<double> temp = new List<double>();
+            List<double> b = new List<double>();
+            List<double> a = new List<double>();
+            List<Factor> y_new = new List<Factor>();
+            List<Factor> strong = new List<Factor>();
+            List<int> strongIndex = new List<int>();
+            List<Factor> mid = new List<Factor>();
+            List<int> midIndex = new List<int>();
+            List<Factor> easy = new List<Factor>();
+            List<int> easyIndex = new List<int>();
+
+            for(int i = 0; i < Model.Count(); i++)
+            {
+                temp.Add(0);
+            }
+
+            for (int i = 0; i < Model.Count(); i++)
+            {
+                if (index != i)
+                {
+                    if (Math.Abs(Correlation.Pearson(Model[index].Observations, Model[i].Observations)) > 0.7)
+                    {
+                        strong.Add(Model[i]);
+                        strongIndex.Add(i);
+                    }
+                    else if (Math.Abs(Correlation.Pearson(Model[index].Observations, Model[i].Observations)) <= 0.7 && Math.Abs(Correlation.Pearson(Model[index].Observations, Model[i].Observations)) > 0.3)
+                    {
+                        mid.Add(Model[i]);
+                        midIndex.Add(i);
+                    }
+                    else
+                    {
+                        easy.Add(Model[i]);
+                        easyIndex.Add(i);
+                    }
+                }
+            }
+            //
+            if(easy.Count > 0)
+            {
+                if(mid.Count > 0)
+                {
+                    if (strong.Count() == 0)
+                    {
+                        strong = mid; strongIndex = midIndex;
+                        mid = easy; midIndex = easyIndex;
+                        easy = new List<Factor>(); easyIndex = new List<int>();
+                    }
+                }
+                else
+                {
+                    if (strong.Count() > 0)
+                    {
+                        mid = easy; midIndex = easyIndex;
+                        easy = new List<Factor>(); easyIndex = new List<int>();
+                    }
+                    else
+                    {
+                        strong = easy; strongIndex = midIndex;
+                        easy = new List<Factor>(); easyIndex = new List<int>();
+                    }
+                }
+            }
+            else
+            {
+                if (mid.Count > 0)
+                {
+                    if (strong.Count() == 0)
+                    {
+                        strong = mid; strongIndex = midIndex;
+                        mid = new List<Factor>(); midIndex = new List<int>();
+                    }
+                }
+            }
+            //
+            for(int i = 0; i < strong.Count(); i++)
+            {
+                temp[strongIndex[i]] = Math.Abs(Correlation.Pearson(Model[index].Observations, strong[i].Observations));
+            }
+            if (mid.Count() > 0)
+            {
+                for(int i=0;i<mid.Count(); i++)
+                {
+                    double sum = 0;
+                    for (int j = 0; j < strong.Count(); j++)
+                    {
+                        sum += Math.Abs(Correlation.Pearson(Model[index].Observations, strong[j].Observations)) *
+                            Math.Abs(Correlation.Pearson(mid[i].Observations, strong[j].Observations));
+                    }
+                    temp[midIndex[i]] = sum;
+                }
+            }
+            if (easy.Count() > 0)
+            {
+                for(int i = 0; i < easy.Count(); i++)
+                {
+                    double sum = 0;
+                    for (int j = 0; j < strong.Count(); j++)
+                    {
+                        for (int k = 0; k < mid.Count(); k++)
+                        {
+                            sum += Math.Abs(Correlation.Pearson(Model[index].Observations, strong[j].Observations)) *
+                                Math.Abs(Correlation.Pearson(strong[j].Observations, mid[k].Observations)) *
+                                Math.Abs(Correlation.Pearson(mid[k].Observations, easy[i].Observations));
+                        }
+                    }
+                    temp[easyIndex[i]] = sum;
+                }
+            }
+
+            for (int i = 1; i < temp.Count(); i++)
+            {
+
+                b.Add(temp[i] * (Y.Observations.StandardDeviation()) / Model[i].Observations.StandardDeviation());
+                a.Add(Y.Observations.Average() - b[i-1] * Model[i].Observations.Average());
+                for (int j = 0; j < Model[index].Observations.Count(); j++)
+                {
+                    Model[i].Observations[j] = b[i - 1] * Model[index].Observations[j];
+                    Model[i].Observations[j] += a[i - 1]; 
+                }
+            }
+
+            return Model;
         }
         #endregion
 

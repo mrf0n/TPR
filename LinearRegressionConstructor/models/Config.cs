@@ -7,6 +7,7 @@
         private double thresholdL;
         private bool isSignC;
         private bool isSignCheckedBl1;
+        private bool isSignCheckedBl2;
 
         public Factor ManagedFactor
         {
@@ -45,13 +46,19 @@
             get => isSignCheckedBl1;
             set => isSignCheckedBl1 = value;
         }
-        public Config(Factor manFactor, double tfc, double tfm, bool isSignCh, bool isSignCheckedBl1)
+        public bool IsSignCheckedBlock2
+        {
+            get => isSignCheckedBl2;
+            set => isSignCheckedBl2 = value;
+        }
+        public Config(Factor manFactor, double tfc, double tfm, bool isSignCh, bool isSignCheckedBl1, bool isSignCheckedBl2)
         {
             ManagedFactor = manFactor;
             ThresholdForCouples = tfc;
             ThresholdForManaged = tfm;
             IsSignChecked = isSignCh;
             IsSignCheckedBlock1 = isSignCheckedBl1;
+            IsSignCheckedBlock2 = isSignCheckedBl2;
         }
     }
 }

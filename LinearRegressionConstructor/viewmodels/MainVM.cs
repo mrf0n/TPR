@@ -163,7 +163,7 @@ namespace LinearRegressionConstructor.viewmodels
             get
             {
                 if (Model.Count == 0)
-                    return "Модели нет";
+                    return "";
                 var res = $"y = {ModelB[0]:N7} ";
                 for (int i = 1; i < ModelB.Count; i++)
                 {
@@ -209,6 +209,7 @@ namespace LinearRegressionConstructor.viewmodels
         private RelayCommand cancel;
         private RelayCommand settings;
         private RelayCommand exit;
+        private RelayCommand zall;
 
         public RelayCommand Open
         {
@@ -265,6 +266,13 @@ namespace LinearRegressionConstructor.viewmodels
             Compute.IsBackground = true;
             Compute.SetApartmentState(ApartmentState.STA);
             Compute.Start();
+
+        });
+
+        public RelayCommand zal => zall ??= new(obj =>
+        {
+            Compute.Interrupt();
+            UpdateControls();
         });
 
         public RelayCommand Cancel => cancel ??= new(obj =>
@@ -432,12 +440,12 @@ namespace LinearRegressionConstructor.viewmodels
             UpdateControls();
 
             listafterbl2 = Model;
-
+            
             //здесь должен быть блок 2
 
             if (CalculationConfig.IsSignCheckedBlock2)
             {
-                Model = Block2(Model, ModelB);
+                Model = Block2(Model);
             }
 
             UpdateControls();
@@ -1234,18 +1242,18 @@ namespace LinearRegressionConstructor.viewmodels
             return r;
         }
 
-        List<Factor> Block2(List<Factor> Model, List<double> ModelB)
+        List<Factor> Block2(List<Factor> Model)
         {
 
-            ChooseBlock2Parame wnd2 = new();
-            ((ChooseBlock2ParameVM)wnd2.DataContext).FactorsCollection = listafterbl2;
-            wnd2.ShowDialog();
+            //ChooseBlock2Parame wnd2 = new();
+            //((ChooseBlock2ParameVM)wnd2.DataContext).FactorsCollection = listafterbl2;
+            //wnd2.ShowDialog();
             //Выбор управляемого фактора
-            if (CalculationConfig.Block2Factor == null)
-            {
-                CalculationConfig.Block2Factor = Model.First();
-            }
-            Bl2 = CalculationConfig.Block2Factor;
+            //if (CalculationConfig.Block2Factor == null)
+            //{
+            //    CalculationConfig.Block2Factor = Model.First();
+            //}
+            //Bl2 = CalculationConfig.Block2Factor;
 
             //Y.Num = 0;
             List<double> temp = new List<double>();
@@ -1306,7 +1314,7 @@ namespace LinearRegressionConstructor.viewmodels
                     }
                     else
                     {
-                        strong = easy; strongIndex = midIndex;
+                        strong = easy; strongIndex = easyIndex;
                         easy = new List<Factor>(); easyIndex = new List<int>();
                     }
                 }

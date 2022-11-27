@@ -552,23 +552,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Admin\\.nuget\\packages\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Users\\fremovro\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Admin\\Desktop\\TPR\\LinearRegressionConstructor\\LinearRegressionConstructor.csproj",
+      "projectUniqueName": "C:\\Users\\fremovro\\source\\repos\\TPR\\LinearRegressionConstructor\\LinearRegressionConstructor.csproj",
       "projectName": "LinearRegressionConstructor",
-      "projectPath": "C:\\Users\\Admin\\Desktop\\TPR\\LinearRegressionConstructor\\LinearRegressionConstructor.csproj",
-      "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Admin\\Desktop\\TPR\\LinearRegressionConstructor\\obj\\",
+      "projectPath": "C:\\Users\\fremovro\\source\\repos\\TPR\\LinearRegressionConstructor\\LinearRegressionConstructor.csproj",
+      "packagesPath": "C:\\Users\\fremovro\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\fremovro\\source\\repos\\TPR\\LinearRegressionConstructor\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-      ],
       "configFilePaths": [
-        "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\fremovro\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -626,7 +622,7 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.402\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.100\\RuntimeIdentifierGraph.json"
       }
     }
   },

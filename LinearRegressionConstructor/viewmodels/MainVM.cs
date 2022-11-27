@@ -151,6 +151,7 @@ namespace LinearRegressionConstructor.viewmodels
         public static Factor? Bl2 { get; set; }
         public static List<double> ModelB { get; set; }
         public static List<Factor> Model { get; set; }
+        public static List<string> Functions { get; set; }
         private static List<List<Factor>> Models;
         #endregion
 
@@ -227,6 +228,7 @@ namespace LinearRegressionConstructor.viewmodels
                         try
                         {
                             ReadData(path);
+                            Functions = new List<string>();
                             Status = DSReady;
                         }
                         catch (Exception)
@@ -735,6 +737,7 @@ namespace LinearRegressionConstructor.viewmodels
 
             List<string> funcResultName = new List<string>();
 
+            //?
             corCoeff = Correlation.Pearson(x.Observations, y.Observations);
 
             for (int funcIndex = 1; funcIndex <= funcCount; funcIndex++)
@@ -871,21 +874,21 @@ namespace LinearRegressionConstructor.viewmodels
             List<double> pearsonLst = new List<double>();
             for(int i = 0; i < funcResult.Count; i++)
             {
-                pearsonLst.Add(Correlation.Pearson(funcResult[i], y.Observations));
+                pearsonLst.Add(Math.Abs(Correlation.Pearson(funcResult[i], y.Observations)));
             }
             var max = pearsonLst.Max();
-            var maxName = funcResultName[pearsonLst.LastIndexOf(max)];
+            string maxName = funcResultName[pearsonLst.LastIndexOf(max)];
 
-            Factor temp = _x;
             //temp.Name = maxName;
-            temp.Observations = funcResult[pearsonLst.LastIndexOf(max)];
-            if (Math.Abs(max) > (Math.Abs(corCoeff) + 0.01))
+            Functions.Add(maxName);
+            _x.Observations = funcResult[pearsonLst.LastIndexOf(max)];
+            if (max > (Math.Abs(corCoeff) + 0.01))
             {
-                return FuncPreprocessingOfStatData(temp, y);
+                return FuncPreprocessingOfStatData(_x, y);
             }
             else
             {
-                return temp;
+                return _x;
             }
         }
 

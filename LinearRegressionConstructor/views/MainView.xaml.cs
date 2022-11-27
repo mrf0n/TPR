@@ -30,6 +30,26 @@ namespace LinearRegressionConstructor.views
 
         private void choseParamList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            string ParamName = choseParamList.SelectedValue.ToString();
+            List<Factor> Model = MainVM.Model;
+            Factor Bl2 = Model[0];
+            for (int i = 0; i < Model.Count; i++)
+            {
+                if (ParamName.Contains(Model[i].Name))
+                {
+                    Bl2 = Model[i];
+                    break;
+                }
+            }
+            double emin = Bl2.Observations.Min() - (Bl2.Observations.Max() - Bl2.Observations.Min()) * 0.5;
+            double emax = Bl2.Observations.Max() + (Bl2.Observations.Max() - Bl2.Observations.Min()) * 0.5;
+            double tmin = Bl2.Observations.Average() - (3 * Bl2.Observations.StandardDeviation());
+            double tmax = Bl2.Observations.Average() + (3 * Bl2.Observations.StandardDeviation());
+            double min = (emin + tmin) / 2;
+            double max = (emax + tmax) / 2;
+            MySlider.Minimum = min;
+            MySlider.Maximum = max;
+            MySlider.Value = min + ((Math.Abs(max) + Math.Abs(min)) / 2);
         }
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
@@ -49,6 +69,15 @@ namespace LinearRegressionConstructor.views
             {
                 choseParamList.Items.Add(str[i]);
             }
+            Functions.Text = "";
+            List<string> functions = MainVM.Functions;
+            for(int i = 0; i < functions.Count; i++)
+            {
+                if (i == 0)
+                    Functions.Text += functions[i];
+                else
+                    Functions.Text += " => " + functions[i];
+            }
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
@@ -58,7 +87,7 @@ namespace LinearRegressionConstructor.views
             List<Factor> Model = MainVM.Model;
             Factor Y = MainVM.Y;
             Factor Bl2 = Model[0];
-            for(int i =0; i < Model.Count; i++)
+            for (int i = 0; i < Model.Count; i++)
             {
                 if (ParamName.Contains(Model[i].Name))
                 {
@@ -67,6 +96,7 @@ namespace LinearRegressionConstructor.views
                 }
             }
             List<double> temp = new List<double>();
+            List<double> XI = new List<double>();
             List<Factor> y_new = new List<Factor>();
             List<Factor> strong = new List<Factor>();
             List<int> strongIndex = new List<int>();
@@ -74,6 +104,13 @@ namespace LinearRegressionConstructor.views
             List<int> midIndex = new List<int>();
             List<Factor> easy = new List<Factor>();
             List<int> easyIndex = new List<int>();
+
+            double emin = Bl2.Observations.Min() - (Bl2.Observations.Max() - Bl2.Observations.Min()) * 0.5;
+            double emax = Bl2.Observations.Max() + (Bl2.Observations.Max() - Bl2.Observations.Min()) * 0.5;
+            double tmin = Bl2.Observations.Average() - (3 * Bl2.Observations.StandardDeviation());
+            double tmax = Bl2.Observations.Average() + (3 * Bl2.Observations.StandardDeviation());
+            double min = (emin + tmin) / 2;
+            double max = (emax + tmax) / 2;
 
             for (int i = 0; i < Model.Count(); i++)
             {
@@ -175,15 +212,33 @@ namespace LinearRegressionConstructor.views
             }
             int tempPar = int.Parse(ParamName.Split(' ')[0].Substring(1));
             Res.Text = "";
+            Res.Foreground = Brushes.Black;
             for (int i = 0; i < temp.Count(); i++)
             {
                 if (temp[i] != 0)
                 {
                     double b = temp[i] * (Y.Observations.StandardDeviation()) / Model[i].Observations.StandardDeviation();
-                    double a = Y.Observations.Average() - b * Model[i].Observations.Average();
-                    Res.Text += "X" + (i + 1).ToString() + " = " + a + "+" + b + "·X" + tempPar + '\n';
+                    double a = Y.Observations.Average() - b * Model[i].Observations.Average(); 
+                    Res.Text += "X" + (i + 1).ToString() + " = " + a + "+" + b + "·X" + tempPar + "=" + (a + b * val).ToString();
+                    if ((a + b * val) < min || (a + b * val) > max)
+                    {
+                        Res.Foreground = Brushes.Red;
+                        Res.Text += " - !НЕ ВХОДИТ В ИНТЕРВАЛ!";
+                    }
+                    Res.Text += '\n';
+                    XI.Add(a + b * val);
+                }
+                else
+                {
+                    XI.Add(val);
                 }
             }
+            double resY = MainVM.ModelB[0];
+            for (int i = 0; i < temp.Count(); i++)
+            {
+                resY += MainVM.ModelB[i + 1] * XI[i];
+            }
+            Res.Text += "\n" + "y = " + resY + ", при X" + tempPar + " = " + val;
         }
     }
 }

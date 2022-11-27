@@ -16,6 +16,10 @@
         </Style>
     </Window.Resources>
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="871*"/>
+            <ColumnDefinition Width="229*"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition/>
@@ -24,16 +28,15 @@
 
         <Menu Height="30"
               VerticalAlignment="Center"
-              Background="White">
+              Background="White" Grid.ColumnSpan="2">
             <MenuItem Header="Открыть файл" Command="{Binding Open}" Height="30"/>
             <MenuItem Header="Опции" Command="{Binding Settings}" Height="30"/>
         </Menu>
-        <Button Content="Вывести регрессионное уравнение" Style="{StaticResource bttnStyle}" VerticalAlignment="Bottom" Command="{Binding Calculate}" IsEnabled="{Binding IsCalcReady}" Width="NaN" Margin="10,0,868,297" Height="42" Grid.Row="1" Click="Button_Click"/>
-        <TextBlock Text="{Binding Equation, UpdateSourceTrigger=PropertyChanged}" FontSize="24" DockPanel.Dock="Right" Margin="250,4,10,297" Grid.Row="1"/>
+        <Button Content="Вывести регрессионное уравнение" Style="{StaticResource bttnStyle}" VerticalAlignment="Bottom" Command="{Binding Calculate}" IsEnabled="{Binding IsCalcReady}" Width="NaN" Margin="10,0,639,297" Height="52" Grid.Row="1" Click="Button_Click"/>
+        <TextBlock Text="{Binding Equation, UpdateSourceTrigger=PropertyChanged}" FontSize="24" Margin="250,4,10,297" Grid.Row="1" Grid.ColumnSpan="2"/>
         <TextBlock Name="Res" Text="{Binding ModelInfo, UpdateSourceTrigger=PropertyChanged}"
                        FontSize="16"
-                       DockPanel.Dock="Top"
-                       HorizontalAlignment="Left" Width="834" RenderTransformOrigin="0.5,0.5" Margin="250,81,0,10" Grid.Row="1">
+                       HorizontalAlignment="Left" Width="834" RenderTransformOrigin="0.5,0.5" Margin="250,81,0,10" Grid.Row="1" Grid.ColumnSpan="2">
             <TextBlock.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform ScaleX="1"/>
@@ -43,14 +46,26 @@
                 </TransformGroup>
             </TextBlock.RenderTransform>
         </TextBlock>
-        <Label Content="Значение параметра:" Margin="10,245,900,74" Grid.Row="1" />
-        <Label Name="ValPar" Content="0" Margin="134,245,855,74" Grid.Row="1" />
-        <ComboBox Name="choseParamList" Height="30" VerticalAlignment="Top" Margin="10,157,868,0" Grid.Row="1" SelectionChanged="choseParamList_SelectionChanged"></ComboBox>
-        <Slider Value="0" Minimum="0" Maximum="100" SelectionStart="0" 
-        IsSelectionRangeEnabled="True" Margin="10,205,868,110" Grid.Row="1" ValueChanged="Slider_ValueChanged" />
+        <TextBlock Name="Functions"
+                       FontSize="16"
+                       HorizontalAlignment="Left" Width="1074" RenderTransformOrigin="0.5,0.5" Margin="10,371,0,3" Grid.RowSpan="2" Grid.Row="1" Grid.ColumnSpan="2">
+            <TextBlock.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleX="1"/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </TextBlock.RenderTransform>
+        </TextBlock>
+        <Label Content="Значение параметра:" Margin="10,245,671,92" Grid.Row="1" />
+        <Label Name="ValPar" Content="0" Margin="134,245,626,92" Grid.Row="1" />
+        <ComboBox Name="choseParamList" Height="30" VerticalAlignment="Top" Margin="10,157,639,0" Grid.Row="1" SelectionChanged="choseParamList_SelectionChanged"></ComboBox>
+        <Slider Name="MySlider" Value="0" Minimum="0" Maximum="100" SelectionStart="0" 
+        IsSelectionRangeEnabled="True" Margin="10,205,639,110" Grid.Row="1" ValueChanged="Slider_ValueChanged" />
         <Label Content="{Binding Status}"
                Grid.Row="2"
-               HorizontalAlignment="Center" Margin="0,2,0,-2" Width="10"/>
+               HorizontalAlignment="Left" Margin="545,2,0,-2" Width="10"/>
         <TextBlock Text="{Binding CurrentCount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                        FontSize="16"
                        HorizontalAlignment="Left" Width="270" RenderTransformOrigin="0.5,0.5" Margin="258,3,0,6">
@@ -63,8 +78,8 @@
                 </TransformGroup>
             </TextBlock.RenderTransform>
         </TextBlock>
-        <Button Content="Обновить&#xD;&#xA;" Margin="10,107,979,221" Grid.Row="1" Click="Button_Click_1"
+        <Button Content="Обновить&#xD;&#xA;" Margin="10,93,750,237" Grid.Row="1" Click="Button_Click_1"
                 Command="{Binding zal}"/>
-        <Button Content="Запуск&#xD;&#xA;" Margin="10,286,868,37" Grid.Row="1" Click="Button_Click_2"/>
+        <Button Content="Запуск&#xD;&#xA;" Margin="10,299,639,29" Grid.Row="1" Click="Button_Click_2"/>
     </Grid>
 </Window>
